@@ -1,0 +1,9 @@
+# Build / Executable artifacts
+*.exe
+*.obj
+*.o
+*.pdb
+build/
+bin/
+out/
+.vs/
