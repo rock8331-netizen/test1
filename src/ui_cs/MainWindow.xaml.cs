@@ -285,6 +285,18 @@ namespace YoutubeDownloader
         // ── Python 실행 파일 탐색 ─────────────────────────────
         private static string? FindPython()
         {
+            // 명시적 알려진 경로 우선 탐색
+            string[] knownPaths = {
+                @"C:\Users\user\AppData\Local\Python\bin\python.exe",
+                @"C:\Users\user\AppData\Local\Programs\Python\Python314\python.exe",
+                @"C:\Users\user\AppData\Local\Programs\Python\Python311\python.exe",
+                @"C:\Users\user\anaconda3\python.exe",
+                @"C:\Users\user\miniconda3\python.exe",
+            };
+            foreach (string p in knownPaths)
+                if (File.Exists(p)) return p;
+
+            // PATH 에서 탐색
             foreach (string name in new[] { "python", "python3" })
             {
                 string? found = FindExecutable(name);
