@@ -64,7 +64,7 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBox Grid.Column="0" x:Name="TxtUrl"
-                             Height="42"
+                             MinHeight="42"
                              VerticalContentAlignment="Center"
                              FontSize="13"/>
                     <Button Grid.Column="2" Content="📋 붙여넣기"
@@ -134,7 +134,7 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBox Grid.Column="0" x:Name="TxtOutput"
-                             Height="42" VerticalContentAlignment="Center"/>
+                             MinHeight="42" VerticalContentAlignment="Center"/>
                     <Button Grid.Column="2" Content="📁 찾아보기"
                             Height="42" Padding="16,0"
                             Click="BtnBrowse_Click"/>

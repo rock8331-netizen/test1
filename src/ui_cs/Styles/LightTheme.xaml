@@ -81,14 +81,14 @@
     </Style>
 
     <!-- ══════════════════════════════════════════════════════════════
-         TextBox Style (High Contrast Text & Caret & Direct Focus)
+         TextBox Style (High Contrast & No Vertical Text Clipping)
          ══════════════════════════════════════════════════════════════ -->
     <Style TargetType="TextBox">
         <Setter Property="Background"          Value="{StaticResource InputBgBrush}"/>
         <Setter Property="Foreground"          Value="#111827"/>
         <Setter Property="BorderBrush"         Value="{StaticResource BorderSubtleBrush}"/>
         <Setter Property="BorderThickness"       Value="1.5"/>
-        <Setter Property="Padding"             Value="12,8"/>
+        <Setter Property="Padding"             Value="12,4"/>
         <Setter Property="MinHeight"           Value="42"/>
         <Setter Property="FontFamily"          Value="Malgun Gothic, Segoe UI"/>
         <Setter Property="FontSize"            Value="13"/>
@@ -104,6 +104,7 @@
                             CornerRadius="8">
                         <ScrollViewer x:Name="PART_ContentHost"
                                       Margin="{TemplateBinding Padding}"
+                                      VerticalAlignment="Center"
                                       Focusable="False"/>
                     </Border>
                     <ControlTemplate.Triggers>
