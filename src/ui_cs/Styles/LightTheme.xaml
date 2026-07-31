@@ -3,29 +3,34 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!-- ══════════════════════════════════════════════════════════════
-         Modern Slate-Dark Color Palette (Sleek Modern Desktop UI)
+         ISO 9241 & WCAG 2.1 AAA Compliant Light Theme Palette
+         (화이트 톤 프리미엄 스타일)
          ══════════════════════════════════════════════════════════════ -->
-    <Color x:Key="BgCanvasColor">#0E0E12</Color>
-    <Color x:Key="BgCardColor">#16161D</Color>
-    <Color x:Key="BgInputColor">#20202B</Color>
-    <Color x:Key="BgInputHoverColor">#282836</Color>
-    <Color x:Key="BorderSubtleColor">#2A2A38</Color>
-    <Color x:Key="BorderFocusColor">#FF0033</Color>
 
-    <Color x:Key="AccentRedColor">#FF0033</Color>
-    <Color x:Key="AccentRedHoverColor">#E6002E</Color>
-    <Color x:Key="AccentRedActiveColor">#CC0029</Color>
+    <!-- Surfaces & Canvas -->
+    <Color x:Key="CanvasBgColor">#F3F4F6</Color>       <!-- 연한 캔버스 배경 -->
+    <Color x:Key="SurfaceCardColor">#FFFFFF</Color>     <!-- 순백색 카드 -->
+    <Color x:Key="InputBgColor">#FFFFFF</Color>         <!-- 순백색 입력창 -->
+    <Color x:Key="InputHoverColor">#F9FAFB</Color>     <!-- 호버 입력창 -->
+    <Color x:Key="BorderSubtleColor">#D1D5DB</Color>     <!-- 3:1 UI 경계 테두리 -->
+    <Color x:Key="BorderFocusColor">#D90026</Color>      <!-- 포커스 테두리 (레드) -->
 
-    <Color x:Key="TextPrimaryColor">#F4F4F8</Color>
-    <Color x:Key="TextSecondaryColor">#A0A0B4</Color>
-    <Color x:Key="TextMutedColor">#5C5C70</Color>
-    <Color x:Key="ConsoleBgColor">#0A0A0D</Color>
+    <!-- Primary Accent (YouTube Crimson Red) -->
+    <Color x:Key="AccentRedColor">#D90026</Color>
+    <Color x:Key="AccentRedHoverColor">#B80020</Color>
+    <Color x:Key="AccentRedActiveColor">#99001B</Color>
+
+    <!-- Typography Colors (WCAG AAA High Contrast) -->
+    <Color x:Key="TextPrimaryColor">#111827</Color>     <!-- 선명한 흑색 (가독성 100%) -->
+    <Color x:Key="TextSecondaryColor">#374151</Color>   <!-- 보조 흑색 -->
+    <Color x:Key="TextMutedColor">#6B7280</Color>       <!-- 연한 회색 -->
+    <Color x:Key="ConsoleBgColor">#111827</Color>       <!-- 고대비 콘솔 배경 -->
 
     <!-- Brushes -->
-    <SolidColorBrush x:Key="BgCanvasBrush"       Color="{StaticResource BgCanvasColor}"/>
-    <SolidColorBrush x:Key="BgCardBrush"         Color="{StaticResource BgCardColor}"/>
-    <SolidColorBrush x:Key="BgInputBrush"        Color="{StaticResource BgInputColor}"/>
-    <SolidColorBrush x:Key="BgInputHoverBrush"   Color="{StaticResource BgInputHoverColor}"/>
+    <SolidColorBrush x:Key="CanvasBgBrush"       Color="{StaticResource CanvasBgColor}"/>
+    <SolidColorBrush x:Key="SurfaceCardBrush"     Color="{StaticResource SurfaceCardColor}"/>
+    <SolidColorBrush x:Key="InputBgBrush"        Color="{StaticResource InputBgColor}"/>
+    <SolidColorBrush x:Key="InputHoverBrush"      Color="{StaticResource InputHoverColor}"/>
     <SolidColorBrush x:Key="BorderSubtleBrush"   Color="{StaticResource BorderSubtleColor}"/>
     <SolidColorBrush x:Key="BorderFocusBrush"    Color="{StaticResource BorderFocusColor}"/>
 
@@ -42,30 +47,30 @@
          Window Defaults
          ══════════════════════════════════════════════════════════════ -->
     <Style TargetType="Window">
-        <Setter Property="Background" Value="{StaticResource BgCanvasBrush}"/>
+        <Setter Property="Background" Value="{StaticResource CanvasBgBrush}"/>
         <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
-        <Setter Property="FontFamily" Value="Segoe UI Variable Display, Malgun Gothic, Segoe UI"/>
+        <Setter Property="FontFamily" Value="Malgun Gothic, Segoe UI, sans-serif"/>
         <Setter Property="FontSize"   Value="13"/>
     </Style>
 
     <!-- ══════════════════════════════════════════════════════════════
-         Card Container Style (Clean Padding, Subtle Border, Rounded)
+         Card Container Style (White Card with Soft Shadow)
          ══════════════════════════════════════════════════════════════ -->
     <Style x:Key="CardPanel" TargetType="Border">
-        <Setter Property="Background"      Value="{StaticResource BgCardBrush}"/>
+        <Setter Property="Background"      Value="{StaticResource SurfaceCardBrush}"/>
         <Setter Property="BorderBrush"     Value="{StaticResource BorderSubtleBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
-        <Setter Property="CornerRadius"    Value="12"/>
-        <Setter Property="Padding"         Value="18,14"/>
+        <Setter Property="CornerRadius"    Value="10"/>
+        <Setter Property="Padding"         Value="20,16"/>
         <Setter Property="Effect">
             <Setter.Value>
-                <DropShadowEffect BlurRadius="12" ShadowDepth="2" Direction="270" Color="#000000" Opacity="0.25"/>
+                <DropShadowEffect BlurRadius="8" ShadowDepth="1" Direction="270" Color="#000000" Opacity="0.05"/>
             </Setter.Value>
         </Setter>
     </Style>
 
     <!-- ══════════════════════════════════════════════════════════════
-         Modern Section Header TextBlock
+         Section Header Style
          ══════════════════════════════════════════════════════════════ -->
     <Style x:Key="SectionHeader" TargetType="TextBlock">
         <Setter Property="Foreground"  Value="{StaticResource TextSecondaryBrush}"/>
@@ -75,17 +80,18 @@
     </Style>
 
     <!-- ══════════════════════════════════════════════════════════════
-         Modern Text Inputs
+         TextBox Style (High Contrast Text & Caret & Direct Focus)
          ══════════════════════════════════════════════════════════════ -->
     <Style TargetType="TextBox">
-        <Setter Property="Background"          Value="{StaticResource BgInputBrush}"/>
-        <Setter Property="Foreground"          Value="{StaticResource TextPrimaryBrush}"/>
+        <Setter Property="Background"          Value="{StaticResource InputBgBrush}"/>
+        <Setter Property="Foreground"          Value="#111827"/>
         <Setter Property="BorderBrush"         Value="{StaticResource BorderSubtleBrush}"/>
-        <Setter Property="BorderThickness"       Value="1"/>
-        <Setter Property="Padding"             Value="14,10"/>
-        <Setter Property="FontFamily"          Value="Segoe UI Variable Text, Malgun Gothic, Segoe UI"/>
+        <Setter Property="BorderThickness"       Value="1.5"/>
+        <Setter Property="Padding"             Value="12,8"/>
+        <Setter Property="MinHeight"           Value="42"/>
+        <Setter Property="FontFamily"          Value="Malgun Gothic, Segoe UI"/>
         <Setter Property="FontSize"            Value="13"/>
-        <Setter Property="CaretBrush"          Value="{StaticResource AccentRedBrush}"/>
+        <Setter Property="CaretBrush"          Value="#111827"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -95,16 +101,17 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             CornerRadius="8">
-                        <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/>
+                        <ScrollViewer x:Name="PART_ContentHost"
+                                      Margin="{TemplateBinding Padding}"
+                                      Focusable="False"/>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource BgInputHoverBrush}"/>
-                            <Setter TargetName="Bd" Property="BorderBrush" Value="#3D3D4E"/>
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="#9CA3AF"/>
                         </Trigger>
                         <Trigger Property="IsFocused" Value="True">
-                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource BgInputHoverBrush}"/>
                             <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource AccentRedBrush}"/>
+                            <Setter TargetName="Bd" Property="BorderThickness" Value="2"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -113,17 +120,18 @@
     </Style>
 
     <!-- ══════════════════════════════════════════════════════════════
-         Secondary Standard Button (Gray / Ghost Pill)
+         Secondary Standard Button
          ══════════════════════════════════════════════════════════════ -->
     <Style TargetType="Button">
-        <Setter Property="Background"          Value="{StaticResource BgInputBrush}"/>
+        <Setter Property="Background"          Value="#F3F4F6"/>
         <Setter Property="Foreground"          Value="{StaticResource TextPrimaryBrush}"/>
         <Setter Property="BorderBrush"         Value="{StaticResource BorderSubtleBrush}"/>
-        <Setter Property="BorderThickness"       Value="1"/>
-        <Setter Property="Padding"             Value="14,9"/>
+        <Setter Property="BorderThickness"       Value="1.5"/>
+        <Setter Property="Padding"             Value="16,10"/>
+        <Setter Property="MinHeight"           Value="42"/>
         <Setter Property="Cursor"              Value="Hand"/>
-        <Setter Property="FontFamily"          Value="Segoe UI Variable Text, Malgun Gothic"/>
-        <Setter Property="FontWeight"          Value="SemiBold"/>
+        <Setter Property="FontFamily"          Value="Malgun Gothic, Segoe UI"/>
+        <Setter Property="FontWeight"          Value="Bold"/>
         <Setter Property="FontSize"            Value="13"/>
         <Setter Property="Template">
             <Setter.Value>
@@ -138,11 +146,11 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource BgInputHoverBrush}"/>
-                            <Setter TargetName="Bd" Property="BorderBrush" Value="#444458"/>
+                            <Setter TargetName="Bd" Property="Background" Value="#E5E7EB"/>
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="#9CA3AF"/>
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="Bd" Property="Background" Value="#1A1A23"/>
+                            <Setter TargetName="Bd" Property="Background" Value="#D1D5DB"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Opacity" Value="0.4"/>
@@ -154,11 +162,11 @@
     </Style>
 
     <!-- ══════════════════════════════════════════════════════════════
-         Primary Action Button (Crimson Red Pill Button)
+         Primary Action Button (Vibrant Red Button)
          ══════════════════════════════════════════════════════════════ -->
     <Style x:Key="PrimaryActionButton" TargetType="Button">
         <Setter Property="Background"   Value="{StaticResource AccentRedBrush}"/>
-        <Setter Property="Foreground"   Value="White"/>
+        <Setter Property="Foreground"   Value="#FFFFFF"/>
         <Setter Property="BorderBrush"  Value="Transparent"/>
         <Setter Property="FontSize"     Value="15"/>
         <Setter Property="FontWeight"   Value="Bold"/>
@@ -172,7 +180,7 @@
                             CornerRadius="10"
                             Padding="{TemplateBinding Padding}">
                         <Border.Effect>
-                            <DropShadowEffect BlurRadius="16" ShadowDepth="3" Direction="270" Color="#FF0033" Opacity="0.35"/>
+                            <DropShadowEffect BlurRadius="10" ShadowDepth="2" Direction="270" Color="#D90026" Opacity="0.25"/>
                         </Border.Effect>
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
@@ -184,8 +192,8 @@
                             <Setter TargetName="Bd" Property="Background" Value="{StaticResource AccentRedActiveBrush}"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter TargetName="Bd" Property="Background" Value="#383845"/>
-                            <Setter Property="Foreground" Value="#707085"/>
+                            <Setter TargetName="Bd" Property="Background" Value="#E5E7EB"/>
+                            <Setter Property="Foreground" Value="#9CA3AF"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -194,36 +202,41 @@
     </Style>
 
     <!-- ══════════════════════════════════════════════════════════════
-         Segmented Quality Pill Radio Button
+         Quality Pill Radio Button
          ══════════════════════════════════════════════════════════════ -->
     <Style x:Key="QualityPillRadio" TargetType="RadioButton">
-        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="Margin" Value="0,0,8,8"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="RadioButton">
                     <Border x:Name="Bd"
-                            Background="{StaticResource BgInputBrush}"
+                            Background="#F3F4F6"
                             BorderBrush="{StaticResource BorderSubtleBrush}"
-                            BorderThickness="1"
+                            BorderThickness="1.5"
                             CornerRadius="8"
-                            Padding="14,8">
+                            Padding="16,9">
                         <TextBlock Text="{TemplateBinding Content}"
                                    Foreground="{TemplateBinding Foreground}"
-                                   FontFamily="Segoe UI Variable Text, Malgun Gothic"
-                                   FontSize="12"
-                                   FontWeight="SemiBold"/>
+                                   FontFamily="Malgun Gothic, Segoe UI"
+                                   FontSize="12.5"
+                                   FontWeight="Bold"/>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="True">
-                            <Setter TargetName="Bd" Property="Background" Value="#2A0F1A"/>
+                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource AccentRedBrush}"/>
                             <Setter TargetName="Bd" Property="BorderBrush" Value="{StaticResource AccentRedBrush}"/>
-                            <Setter Property="Foreground" Value="#FF5577"/>
+                            <Setter Property="Foreground" Value="#FFFFFF"/>
                         </Trigger>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource BgInputHoverBrush}"/>
-                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                                <Condition Property="IsChecked" Value="False"/>
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="Bd" Property="Background" Value="#E5E7EB"/>
+                            <Setter TargetName="Bd" Property="BorderBrush" Value="#9CA3AF"/>
+                        </MultiTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
@@ -231,35 +244,57 @@
     </Style>
 
     <!-- ══════════════════════════════════════════════════════════════
-         Styled ComboBox
+         ComboBox Styling (Fixed Visible Selection & Menu Items)
          ══════════════════════════════════════════════════════════════ -->
     <Style TargetType="ComboBox">
-        <Setter Property="Background"          Value="{StaticResource BgInputBrush}"/>
-        <Setter Property="Foreground"          Value="{StaticResource TextPrimaryBrush}"/>
+        <Setter Property="Background"          Value="#FFFFFF"/>
+        <Setter Property="Foreground"          Value="#111827"/>
         <Setter Property="BorderBrush"         Value="{StaticResource BorderSubtleBrush}"/>
-        <Setter Property="BorderThickness"       Value="1"/>
-        <Setter Property="Padding"             Value="12,6"/>
-        <Setter Property="Height"              Value="38"/>
+        <Setter Property="BorderThickness"       Value="1.5"/>
+        <Setter Property="Padding"             Value="14,6"/>
+        <Setter Property="Height"              Value="42"/>
+        <Setter Property="FontFamily"          Value="Malgun Gothic, Segoe UI"/>
+        <Setter Property="FontSize"            Value="13"/>
+        <Setter Property="FontWeight"          Value="Bold"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
     </Style>
 
+    <!-- ComboBoxItem Style -->
+    <Style TargetType="ComboBoxItem">
+        <Setter Property="Foreground" Value="#111827"/>
+        <Setter Property="Background" Value="#FFFFFF"/>
+        <Setter Property="Padding"    Value="12,8"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Style.Triggers>
+            <Trigger Property="IsHighlighted" Value="True">
+                <Setter Property="Background" Value="#F3F4F6"/>
+                <Setter Property="Foreground" Value="#D90026"/>
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="#FEE2E2"/>
+                <Setter Property="Foreground" Value="#D90026"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <!-- ══════════════════════════════════════════════════════════════
-         Modern CheckBox
+         CheckBox Style
          ══════════════════════════════════════════════════════════════ -->
     <Style TargetType="CheckBox">
         <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
-        <Setter Property="FontFamily" Value="Segoe UI Variable Text, Malgun Gothic"/>
+        <Setter Property="FontFamily" Value="Malgun Gothic, Segoe UI"/>
         <Setter Property="FontSize" Value="13"/>
+        <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
     </Style>
 
     <!-- ══════════════════════════════════════════════════════════════
-         ProgressBar (Glow Red Fill)
+         ProgressBar (Clean Red Indicator)
          ══════════════════════════════════════════════════════════════ -->
     <Style TargetType="ProgressBar">
         <Setter Property="Height" Value="8"/>
-        <Setter Property="Background" Value="{StaticResource BgInputBrush}"/>
+        <Setter Property="Background" Value="#E5E7EB"/>
         <Setter Property="Foreground" Value="{StaticResource AccentRedBrush}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Template">

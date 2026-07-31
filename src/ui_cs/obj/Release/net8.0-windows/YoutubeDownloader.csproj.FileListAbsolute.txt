@@ -1,4 +1,3 @@
-E:\Dev\python_pj\No15_test\test1\src\ui_cs\obj\Release\net8.0-windows\Styles\DarkTheme.baml
 E:\Dev\python_pj\No15_test\test1\src\ui_cs\obj\Release\net8.0-windows\App.baml
 E:\Dev\python_pj\No15_test\test1\src\ui_cs\obj\Release\net8.0-windows\App.g.cs
 E:\Dev\python_pj\No15_test\test1\src\ui_cs\obj\Release\net8.0-windows\YoutubeDownloader_MarkupCompile.cache
@@ -20,3 +19,4 @@ E:\Dev\python_pj\No15_test\test1\src\ui_cs\obj\Release\net8.0-windows\refint\You
 E:\Dev\python_pj\No15_test\test1\src\ui_cs\obj\Release\net8.0-windows\YoutubeDownloader.pdb
 E:\Dev\python_pj\No15_test\test1\src\ui_cs\obj\Release\net8.0-windows\YoutubeDownloader.genruntimeconfig.cache
 E:\Dev\python_pj\No15_test\test1\src\ui_cs\obj\Release\net8.0-windows\ref\YoutubeDownloader.dll
+E:\Dev\python_pj\No15_test\test1\src\ui_cs\obj\Release\net8.0-windows\Styles\LightTheme.baml
