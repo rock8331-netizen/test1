@@ -95,17 +95,30 @@ namespace YoutubeDownloader
             try { TxtUrl.Text = Clipboard.GetText().Trim(); } catch { }
         }
 
-        // ── 찾아보기 버튼 ──────────────────────────────────────
+        // ── 찾아보기 버튼 (WPF 네이티브 OpenFolderDialog 사용) ──────
         private void BtnBrowse_Click(object sender, RoutedEventArgs e)
         {
-            var dlg = new System.Windows.Forms.FolderBrowserDialog
+            try
             {
-                SelectedPath = TxtOutput.Text,
-                Description  = "저장 폴더를 선택하세요",
-                ShowNewFolderButton = true
-            };
-            if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                TxtOutput.Text = dlg.SelectedPath;
+                var dlg = new Microsoft.Win32.OpenFolderDialog
+                {
+                    InitialDirectory = Directory.Exists(TxtOutput.Text) ? TxtOutput.Text : "",
+                    Title = "저장 폴더를 선택하세요"
+                };
+                if (dlg.ShowDialog(this) == true)
+                    TxtOutput.Text = dlg.FolderName;
+            }
+            catch
+            {
+                // 폴백
+                var dlg = new System.Windows.Forms.FolderBrowserDialog
+                {
+                    SelectedPath = TxtOutput.Text,
+                    Description  = "저장 폴더를 선택하세요"
+                };
+                if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    TxtOutput.Text = dlg.SelectedPath;
+            }
         }
 
         // ── 완료 폴더 열기 버튼 ───────────────────────────────
