@@ -11,10 +11,19 @@ namespace YoutubeDownloader
     /// </summary>
     internal static class NativeInterop
     {
-        // DLL 경로: 빌드 출력 폴더 기준으로 ../../build/ 위치
-        private static readonly string DllPath = Path.GetFullPath(
-            Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                         "..", "..", "..", "build", "YoutubeCore.dll"));
+        // DLL 경로 탐색: 실행파일 동일 폴더 -> build 폴더 순
+        private static string GetDllPath()
+        {
+            string localPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "YoutubeCore.dll");
+            if (File.Exists(localPath)) return localPath;
+
+            string buildPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "build", "YoutubeCore.dll"));
+            if (File.Exists(buildPath)) return buildPath;
+
+            return localPath;
+        }
+
+        private static readonly string DllPath = GetDllPath();
 
         private static IntPtr _dll = IntPtr.Zero;
 

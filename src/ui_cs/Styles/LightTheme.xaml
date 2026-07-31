@@ -27,6 +27,7 @@
     <Color x:Key="ConsoleBgColor">#111827</Color>       <!-- 고대비 콘솔 배경 -->
 
     <!-- Brushes -->
+    <SolidColorBrush x:Key="BgCanvasBrush"       Color="{StaticResource CanvasBgColor}"/>
     <SolidColorBrush x:Key="CanvasBgBrush"       Color="{StaticResource CanvasBgColor}"/>
     <SolidColorBrush x:Key="SurfaceCardBrush"     Color="{StaticResource SurfaceCardColor}"/>
     <SolidColorBrush x:Key="InputBgBrush"        Color="{StaticResource InputBgColor}"/>
