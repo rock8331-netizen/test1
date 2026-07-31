@@ -1,9 +1,15 @@
-# Build / Executable artifacts
+# Build / Executable / Media artifacts
 *.exe
 *.obj
 *.o
 *.pdb
+*.mp4
+*.png
+*.webp
 build/
 bin/
+obj/
+dist/
 out/
 .vs/
+.vscode/

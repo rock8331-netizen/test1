@@ -2,9 +2,6 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <!-- ══════════════════════════════════════════════════════════════
-         Ultra-Slim Modern Minimal Palette (미니멀 슬림 스타일)
-         ══════════════════════════════════════════════════════════════ -->
     <Color x:Key="CanvasBgColor">#FAFAFA</Color>
     <Color x:Key="SurfaceCardColor">#FFFFFF</Color>
     <Color x:Key="InputBgColor">#FFFFFF</Color>
@@ -43,7 +40,6 @@
         <Setter Property="FontSize"   Value="12"/>
     </Style>
 
-    <!-- 슬림 카드 패널 (얇은 1px 테두리, 미니멀 여백) -->
     <Style x:Key="SlimCardPanel" TargetType="Border">
         <Setter Property="Background"      Value="{StaticResource SurfaceCardBrush}"/>
         <Setter Property="BorderBrush"     Value="{StaticResource BorderSubtleBrush}"/>
