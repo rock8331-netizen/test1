@@ -14,7 +14,6 @@
             <Setter Property="FontSize"    Value="11"/>
             <Setter Property="FontWeight"  Value="SemiBold"/>
             <Setter Property="Margin"      Value="0,0,0,6"/>
-            <Setter Property="TextTransform" Value="Uppercase"/>
         </Style>
     </Window.Resources>
 

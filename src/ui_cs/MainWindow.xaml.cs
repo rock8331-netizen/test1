@@ -84,7 +84,9 @@ namespace YoutubeDownloader
         {
             var dlg = new System.Windows.Forms.FolderBrowserDialog
             {
-                SelectedPath = TxtOutput.Text
+                SelectedPath = TxtOutput.Text,
+                Description  = "저장 폴더를 선택하세요",
+                ShowNewFolderButton = true
             };
             if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 TxtOutput.Text = dlg.SelectedPath;
@@ -180,8 +182,8 @@ namespace YoutubeDownloader
         private void RunPythonBackend(string url, string quality, string output,
             string cookies, bool saveSub, bool force, CancellationToken ct)
         {
-            string pyPath    = Path.GetFullPath(BackendPy);
-            string pythonExe = FindPython();
+            string pyPath     = Path.GetFullPath(BackendPy);
+            string? pythonExe = FindPython();
 
             if (pythonExe == null)
             {

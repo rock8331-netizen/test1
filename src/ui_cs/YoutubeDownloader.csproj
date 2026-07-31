@@ -7,14 +7,8 @@
     <UseWPF>true</UseWPF>
     <AssemblyName>YoutubeDownloader</AssemblyName>
     <RootNamespace>YoutubeDownloader</RootNamespace>
-    <ApplicationIcon>Assets\app_icon.ico</ApplicationIcon>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Update="Assets\app_icon.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
 
 </Project>
