@@ -1,0 +1,2 @@
+E:\Dev\python_pj\No15_test\test1\dist\YoutubeDownloader.pdb
+E:\Dev\python_pj\No15_test\test1\dist\YoutubeDownloader.exe
