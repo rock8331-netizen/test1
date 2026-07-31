@@ -2,27 +2,27 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="YouTube Downloader v2.0"
-        Height="640" Width="720"
-        MinHeight="580" MinWidth="640"
+        Height="560" Width="660"
+        MinHeight="500" MinWidth="580"
         WindowStartupLocation="CenterScreen"
         Background="{StaticResource CanvasBgBrush}">
 
-    <Grid Margin="18">
+    <Grid Margin="14">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>   <!-- Header Banner -->
-            <RowDefinition Height="10"/>
+            <RowDefinition Height="8"/>
             <RowDefinition Height="Auto"/>   <!-- URL Input Card -->
-            <RowDefinition Height="10"/>
+            <RowDefinition Height="8"/>
             <RowDefinition Height="Auto"/>   <!-- Quality Options Card -->
-            <RowDefinition Height="10"/>
-            <RowDefinition Height="Auto"/>   <!-- Subtitles & Cookies Card -->
-            <RowDefinition Height="10"/>
+            <RowDefinition Height="8"/>
+            <RowDefinition Height="Auto"/>   <!-- Options Row -->
+            <RowDefinition Height="8"/>
             <RowDefinition Height="Auto"/>   <!-- Output Folder Card -->
-            <RowDefinition Height="12"/>
+            <RowDefinition Height="10"/>
             <RowDefinition Height="Auto"/>   <!-- Action Button -->
-            <RowDefinition Height="10"/>
+            <RowDefinition Height="8"/>
             <RowDefinition Height="Auto"/>   <!-- Progress Panel -->
-            <RowDefinition Height="10"/>
+            <RowDefinition Height="8"/>
             <RowDefinition Height="*"/>      <!-- Terminal Log Console -->
         </Grid.RowDefinitions>
 
@@ -34,47 +34,42 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <Border Background="{StaticResource AccentRedBrush}" CornerRadius="8" Width="36" Height="36" Margin="0,0,12,0">
-                    <Path Data="M 0,0 L 12,8 L 0,16 Z" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2,0,0,0"/>
+                <Border Background="{StaticResource AccentRedBrush}" CornerRadius="6" Width="28" Height="28" Margin="0,0,8,0">
+                    <Path Data="M 0,0 L 10,6 L 0,12 Z" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2,0,0,0"/>
                 </Border>
                 <StackPanel VerticalAlignment="Center">
                     <TextBlock Text="YouTube Downloader"
                                Foreground="{StaticResource TextPrimaryBrush}"
-                               FontSize="18" FontWeight="Bold"/>
-                    <TextBlock Text="C# WPF UI  ·  C++ Core Engine  ·  yt-dlp Backend"
+                               FontSize="16" FontWeight="Bold"/>
+                    <TextBlock Text="C# WPF UI · C++ Core · yt-dlp Backend"
                                Foreground="{StaticResource TextSecondaryBrush}"
-                               FontSize="11" FontWeight="Medium" Margin="0,1,0,0"/>
+                               FontSize="10.5" FontWeight="Medium"/>
                 </StackPanel>
             </StackPanel>
 
             <Button Grid.Column="1" x:Name="BtnOpenFolder" Content="📁 완료 폴더 열기"
-                    VerticalAlignment="Center" Padding="14,8" MinHeight="36"
+                    VerticalAlignment="Center" Padding="10,0" Height="30" FontSize="11.5"
                     Click="BtnOpenFolder_Click"/>
         </Grid>
 
         <!-- ══ URL Input Card ══════════════════════════════════════════ -->
-        <Border Grid.Row="2" Style="{StaticResource CardPanel}">
+        <Border Grid.Row="2" Style="{StaticResource SlimCardPanel}">
             <StackPanel>
                 <TextBlock Text="YOUTUBE LINK" Style="{StaticResource SectionHeader}"/>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="8"/>
+                        <ColumnDefinition Width="6"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBox Grid.Column="0" x:Name="TxtUrl"
-                             MinHeight="36"
-                             VerticalContentAlignment="Center"
-                             FontSize="12.5"/>
-                    <Button Grid.Column="2" Content="📋 붙여넣기"
-                            MinHeight="36" Padding="14,0"
-                            Click="BtnPaste_Click"/>
+                    <TextBox Grid.Column="0" x:Name="TxtUrl" Height="32" FontSize="12"/>
+                    <Button Grid.Column="2" Content="📋 붙여넣기" Height="32" Padding="10,0" Click="BtnPaste_Click"/>
                 </Grid>
             </StackPanel>
         </Border>
 
         <!-- ══ Quality Options Card ════════════════════════════════════ -->
-        <Border Grid.Row="4" Style="{StaticResource CardPanel}">
+        <Border Grid.Row="4" Style="{StaticResource SlimCardPanel}">
             <StackPanel>
                 <TextBlock Text="VIDEO QUALITY" Style="{StaticResource SectionHeader}"/>
                 <WrapPanel x:Name="QualityPanel" Orientation="Horizontal">
@@ -89,31 +84,26 @@
             </StackPanel>
         </Border>
 
-        <!-- ══ Options Card (Subtitles / Force / Cookies) ════════════════ -->
-        <Border Grid.Row="6" Style="{StaticResource CardPanel}">
+        <!-- ══ Options Row ═════════════════════════════════════════════ -->
+        <Border Grid.Row="6" Style="{StaticResource SlimCardPanel}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="16"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="8"/>
+                    <ColumnDefinition Width="6"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <CheckBox Grid.Column="0" x:Name="ChkSub"
-                          Content="자막 저장 (.srt)"
-                          VerticalAlignment="Center"/>
-                <CheckBox Grid.Column="2" x:Name="ChkForce"
-                          Content="새로 받기 (기록 무시)"
-                          VerticalAlignment="Center"/>
+                <CheckBox Grid.Column="0" x:Name="ChkSub" Content="자막 저장 (.srt)" VerticalAlignment="Center"/>
+                <CheckBox Grid.Column="2" x:Name="ChkForce" Content="새로 받기 (기록 무시)" VerticalAlignment="Center"/>
 
                 <TextBlock Grid.Column="4" Text="쿠키 브라우저:"
                            Foreground="{StaticResource TextSecondaryBrush}"
-                           VerticalAlignment="Center" FontSize="12" FontWeight="SemiBold"/>
-                <ComboBox Grid.Column="6" x:Name="CboCookie"
-                          SelectedIndex="0" MinWidth="100" Height="34">
+                           VerticalAlignment="Center" FontSize="11.5" FontWeight="SemiBold"/>
+                <ComboBox Grid.Column="6" x:Name="CboCookie" SelectedIndex="0" MinWidth="90" Height="28">
                     <ComboBoxItem Content="none"/>
                     <ComboBoxItem Content="edge"/>
                     <ComboBoxItem Content="chrome"/>
@@ -123,20 +113,17 @@
         </Border>
 
         <!-- ══ Output Folder Card ══════════════════════════════════════ -->
-        <Border Grid.Row="8" Style="{StaticResource CardPanel}">
+        <Border Grid.Row="8" Style="{StaticResource SlimCardPanel}">
             <StackPanel>
                 <TextBlock Text="DOWNLOAD DIRECTORY" Style="{StaticResource SectionHeader}"/>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="8"/>
+                        <ColumnDefinition Width="6"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBox Grid.Column="0" x:Name="TxtOutput"
-                             MinHeight="36" VerticalContentAlignment="Center"/>
-                    <Button Grid.Column="2" Content="📁 찾아보기"
-                            MinHeight="36" Padding="14,0"
-                            Click="BtnBrowse_Click"/>
+                    <TextBox Grid.Column="0" x:Name="TxtOutput" Height="32"/>
+                    <Button Grid.Column="2" Content="📁 찾아보기" Height="32" Padding="10,0" Click="BtnBrowse_Click"/>
                 </Grid>
             </StackPanel>
         </Border>
@@ -148,64 +135,55 @@
                 Click="BtnAction_Click"/>
 
         <!-- ══ Progress Panel ══════════════════════════════════════════ -->
-        <Border Grid.Row="12" Style="{StaticResource CardPanel}" x:Name="ProgressPanel" Visibility="Collapsed">
+        <Border Grid.Row="12" Style="{StaticResource SlimCardPanel}" x:Name="ProgressPanel" Visibility="Collapsed">
             <StackPanel>
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock x:Name="TxtProgressFile"
-                               Foreground="{StaticResource TextPrimaryBrush}"
-                               FontSize="12.5" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
-                    <TextBlock Grid.Column="1" x:Name="TxtProgressPct"
-                               Foreground="{StaticResource AccentRedBrush}"
-                               FontWeight="Bold" FontSize="13"/>
+                    <TextBlock x:Name="TxtProgressFile" Foreground="{StaticResource TextPrimaryBrush}" FontSize="12" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                    <TextBlock Grid.Column="1" x:Name="TxtProgressPct" Foreground="{StaticResource AccentRedBrush}" FontWeight="Bold" FontSize="12"/>
                 </Grid>
-                <ProgressBar x:Name="PbProgress" Margin="0,6,0,4" Height="6"
-                             Value="0" Maximum="100"/>
-                <TextBlock x:Name="TxtProgressMeta"
-                           Foreground="{StaticResource TextSecondaryBrush}"
-                           FontSize="11" FontWeight="Medium"/>
+                <ProgressBar x:Name="PbProgress" Margin="0,4,0,2" Height="4" Value="0" Maximum="100"/>
+                <TextBlock x:Name="TxtProgressMeta" Foreground="{StaticResource TextSecondaryBrush}" FontSize="10.5" FontWeight="Medium"/>
             </StackPanel>
         </Border>
 
         <!-- ══ Terminal Log Console ════════════════════════════════════ -->
-        <Border Grid.Row="14" Style="{StaticResource CardPanel}" Padding="12">
+        <Border Grid.Row="14" Style="{StaticResource SlimCardPanel}" Padding="8">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <Grid Grid.Row="0" Margin="0,0,0,6">
+                <Grid Grid.Row="0" Margin="0,0,0,4">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="6"/>
+                        <ColumnDefinition Width="4"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="💻" FontSize="11" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="💻" FontSize="10" Margin="0,0,4,0" VerticalAlignment="Center"/>
                         <TextBlock Text="CONSOLE LOGS" Style="{StaticResource SectionHeader}" Margin="0"/>
                     </StackPanel>
-                    <Button Grid.Column="1" Content="지우기" Padding="8,3" FontSize="11" MinHeight="26"
-                            Click="BtnClearLog_Click"/>
-                    <Button Grid.Column="3" Content="복사" Padding="8,3" FontSize="11" MinHeight="26"
-                            Click="BtnCopyLog_Click"/>
+                    <Button Grid.Column="1" Content="지우기" Padding="6,2" FontSize="10.5" Height="22" Click="BtnClearLog_Click"/>
+                    <Button Grid.Column="3" Content="복사" Padding="6,2" FontSize="10.5" Height="22" Click="BtnCopyLog_Click"/>
                 </Grid>
 
                 <TextBox Grid.Row="1" x:Name="TxtLog"
                          Background="{StaticResource ConsoleBgBrush}"
                          Foreground="#F8F9FA"
-                         FontFamily="Cascadia Code, Consolas, Courier New" FontSize="11"
+                         FontFamily="Cascadia Code, Consolas, Courier New" FontSize="10.5"
                          IsReadOnly="True"
                          VerticalScrollBarVisibility="Auto"
                          HorizontalScrollBarVisibility="Auto"
                          TextWrapping="Wrap"
-                         MinHeight="100"
+                         MinHeight="80"
                          BorderThickness="0"
-                         Padding="10"/>
+                         Padding="8"/>
             </Grid>
         </Border>
     </Grid>
