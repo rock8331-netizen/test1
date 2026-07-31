@@ -1,13 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "rvLEEFels3k=",
+  "dgSpecHash": "khaslmb3NAc=",
   "success": true,
   "projectFilePath": "E:\\Dev\\python_pj\\No15_test\\test1\\src\\ui_cs\\YoutubeDownloader.csproj",
-  "expectedPackageFiles": [
-    "C:\\Users\\user\\.nuget\\packages\\microsoft.net.illink.tasks\\8.0.29\\microsoft.net.illink.tasks.8.0.29.nupkg.sha512",
-    "C:\\Users\\user\\.nuget\\packages\\microsoft.netcore.app.runtime.win-x64\\8.0.29\\microsoft.netcore.app.runtime.win-x64.8.0.29.nupkg.sha512",
-    "C:\\Users\\user\\.nuget\\packages\\microsoft.windowsdesktop.app.runtime.win-x64\\8.0.29\\microsoft.windowsdesktop.app.runtime.win-x64.8.0.29.nupkg.sha512",
-    "C:\\Users\\user\\.nuget\\packages\\microsoft.aspnetcore.app.runtime.win-x64\\8.0.29\\microsoft.aspnetcore.app.runtime.win-x64.8.0.29.nupkg.sha512"
-  ],
+  "expectedPackageFiles": [],
   "logs": []
 }

@@ -20,3 +20,4 @@ E:\Dev\python_pj\No15_test\test1\src\ui_cs\obj\Release\net8.0-windows\YoutubeDow
 E:\Dev\python_pj\No15_test\test1\src\ui_cs\obj\Release\net8.0-windows\YoutubeDownloader.genruntimeconfig.cache
 E:\Dev\python_pj\No15_test\test1\src\ui_cs\obj\Release\net8.0-windows\ref\YoutubeDownloader.dll
 E:\Dev\python_pj\No15_test\test1\src\ui_cs\obj\Release\net8.0-windows\Styles\LightTheme.baml
+E:\Dev\python_pj\No15_test\test1\src\ui_cs\bin\Release\net8.0-windows\analytics_py\yt_backend.py

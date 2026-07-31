@@ -13,15 +13,31 @@ namespace YoutubeDownloader
 {
     public partial class MainWindow : Window
     {
-        // ── Python 백엔드 경로 ─────────────────────────────────
-        private static readonly string BackendPy = Path.Combine(
-            AppDomain.CurrentDomain.BaseDirectory,
-            "..", "..", "analytics_py", "yt_backend.py");
+        // ── Python 백엔드 및 저장 경로 ──────────────────────────
+        private static string GetBackendPyPath()
+        {
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            string[] candidates = {
+                Path.Combine(baseDir, "analytics_py", "yt_backend.py"),
+                Path.GetFullPath(Path.Combine(baseDir, "..", "src", "analytics_py", "yt_backend.py")),
+                Path.GetFullPath(Path.Combine(baseDir, "..", "..", "src", "analytics_py", "yt_backend.py")),
+                Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "src", "analytics_py", "yt_backend.py"))
+            };
+            foreach (string p in candidates)
+                if (File.Exists(p)) return p;
+            return candidates[0];
+        }
 
-        // ── 기본 저장 경로 ─────────────────────────────────────
-        private static readonly string DefaultOutput = Path.Combine(
-            AppDomain.CurrentDomain.BaseDirectory,
-            "..", "..", "..", "data", "downloads");
+        private static string GetDefaultOutputPath()
+        {
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            string p = Path.GetFullPath(Path.Combine(baseDir, "downloads"));
+            Directory.CreateDirectory(p);
+            return p;
+        }
+
+        private static readonly string BackendPy = GetBackendPyPath();
+        private static readonly string DefaultOutput = GetDefaultOutputPath();
 
         // ── 현재 실행 중인 다운로드 프로세스 ──────────────────
         private Process? _downloadProcess;

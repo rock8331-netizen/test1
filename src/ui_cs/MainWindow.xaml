@@ -2,27 +2,27 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="YouTube Downloader v2.0"
-        Height="720" Width="760"
-        MinHeight="640" MinWidth="680"
+        Height="640" Width="720"
+        MinHeight="580" MinWidth="640"
         WindowStartupLocation="CenterScreen"
-        Background="{StaticResource BgCanvasBrush}">
+        Background="{StaticResource CanvasBgBrush}">
 
-    <Grid Margin="24">
+    <Grid Margin="18">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>   <!-- Header Banner -->
-            <RowDefinition Height="16"/>
+            <RowDefinition Height="10"/>
             <RowDefinition Height="Auto"/>   <!-- URL Input Card -->
-            <RowDefinition Height="14"/>
+            <RowDefinition Height="10"/>
             <RowDefinition Height="Auto"/>   <!-- Quality Options Card -->
-            <RowDefinition Height="14"/>
+            <RowDefinition Height="10"/>
             <RowDefinition Height="Auto"/>   <!-- Subtitles & Cookies Card -->
-            <RowDefinition Height="14"/>
+            <RowDefinition Height="10"/>
             <RowDefinition Height="Auto"/>   <!-- Output Folder Card -->
-            <RowDefinition Height="18"/>
+            <RowDefinition Height="12"/>
             <RowDefinition Height="Auto"/>   <!-- Action Button -->
-            <RowDefinition Height="14"/>
+            <RowDefinition Height="10"/>
             <RowDefinition Height="Auto"/>   <!-- Progress Panel -->
-            <RowDefinition Height="14"/>
+            <RowDefinition Height="10"/>
             <RowDefinition Height="*"/>      <!-- Terminal Log Console -->
         </Grid.RowDefinitions>
 
@@ -34,22 +34,21 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <!-- Crisp Vector Play Badge Icon -->
-                <Border Background="{StaticResource AccentRedBrush}" CornerRadius="10" Width="40" Height="40" Margin="0,0,14,0">
-                    <Path Data="M 0,0 L 14,9 L 0,18 Z" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="3,0,0,0"/>
+                <Border Background="{StaticResource AccentRedBrush}" CornerRadius="8" Width="36" Height="36" Margin="0,0,12,0">
+                    <Path Data="M 0,0 L 12,8 L 0,16 Z" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2,0,0,0"/>
                 </Border>
                 <StackPanel VerticalAlignment="Center">
                     <TextBlock Text="YouTube Downloader"
                                Foreground="{StaticResource TextPrimaryBrush}"
-                               FontSize="20" FontWeight="Bold"/>
+                               FontSize="18" FontWeight="Bold"/>
                     <TextBlock Text="C# WPF UI  ·  C++ Core Engine  ·  yt-dlp Backend"
                                Foreground="{StaticResource TextSecondaryBrush}"
-                               FontSize="11.5" FontWeight="Medium" Margin="0,2,0,0"/>
+                               FontSize="11" FontWeight="Medium" Margin="0,1,0,0"/>
                 </StackPanel>
             </StackPanel>
 
             <Button Grid.Column="1" x:Name="BtnOpenFolder" Content="📁 완료 폴더 열기"
-                    VerticalAlignment="Center" Padding="16,10"
+                    VerticalAlignment="Center" Padding="14,8" MinHeight="36"
                     Click="BtnOpenFolder_Click"/>
         </Grid>
 
@@ -60,15 +59,15 @@
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="8"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBox Grid.Column="0" x:Name="TxtUrl"
-                             MinHeight="42"
+                             MinHeight="36"
                              VerticalContentAlignment="Center"
-                             FontSize="13"/>
+                             FontSize="12.5"/>
                     <Button Grid.Column="2" Content="📋 붙여넣기"
-                            Height="42" Padding="16,0"
+                            MinHeight="36" Padding="14,0"
                             Click="BtnPaste_Click"/>
                 </Grid>
             </StackPanel>
@@ -79,13 +78,13 @@
             <StackPanel>
                 <TextBlock Text="VIDEO QUALITY" Style="{StaticResource SectionHeader}"/>
                 <WrapPanel x:Name="QualityPanel" Orientation="Horizontal">
-                    <RadioButton x:Name="RdoBest"  Content="Best (최고화질)" Style="{StaticResource QualityPillRadio}" IsChecked="True" GroupName="Quality" Tag="best"/>
-                    <RadioButton x:Name="Rdo4K"    Content="2160p (4K)"      Style="{StaticResource QualityPillRadio}" GroupName="Quality" Tag="2160p"/>
-                    <RadioButton x:Name="Rdo2K"    Content="1440p (2K)"      Style="{StaticResource QualityPillRadio}" GroupName="Quality" Tag="1440p"/>
-                    <RadioButton x:Name="Rdo1080"  Content="1080p (FHD)"     Style="{StaticResource QualityPillRadio}" GroupName="Quality" Tag="1080p"/>
-                    <RadioButton x:Name="Rdo720"   Content="720p (HD)"       Style="{StaticResource QualityPillRadio}" GroupName="Quality" Tag="720p"/>
-                    <RadioButton x:Name="Rdo480"   Content="480p"            Style="{StaticResource QualityPillRadio}" GroupName="Quality" Tag="480p"/>
-                    <RadioButton x:Name="Rdo360"   Content="360p"            Style="{StaticResource QualityPillRadio}" GroupName="Quality" Tag="360p"/>
+                    <RadioButton x:Name="RdoBest"  Content="Best (최고)"  Style="{StaticResource QualityPillRadio}" IsChecked="True" GroupName="Quality" Tag="best"/>
+                    <RadioButton x:Name="Rdo4K"    Content="2160p (4K)"  Style="{StaticResource QualityPillRadio}" GroupName="Quality" Tag="2160p"/>
+                    <RadioButton x:Name="Rdo2K"    Content="1440p (2K)"  Style="{StaticResource QualityPillRadio}" GroupName="Quality" Tag="1440p"/>
+                    <RadioButton x:Name="Rdo1080"  Content="1080p (FHD)" Style="{StaticResource QualityPillRadio}" GroupName="Quality" Tag="1080p"/>
+                    <RadioButton x:Name="Rdo720"   Content="720p (HD)"   Style="{StaticResource QualityPillRadio}" GroupName="Quality" Tag="720p"/>
+                    <RadioButton x:Name="Rdo480"   Content="480p"        Style="{StaticResource QualityPillRadio}" GroupName="Quality" Tag="480p"/>
+                    <RadioButton x:Name="Rdo360"   Content="360p"        Style="{StaticResource QualityPillRadio}" GroupName="Quality" Tag="360p"/>
                 </WrapPanel>
             </StackPanel>
         </Border>
@@ -95,11 +94,11 @@
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="28"/>
+                    <ColumnDefinition Width="20"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="8"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
@@ -114,7 +113,7 @@
                            Foreground="{StaticResource TextSecondaryBrush}"
                            VerticalAlignment="Center" FontSize="12" FontWeight="SemiBold"/>
                 <ComboBox Grid.Column="6" x:Name="CboCookie"
-                          SelectedIndex="0" MinWidth="110" Height="36">
+                          SelectedIndex="0" MinWidth="100" Height="34">
                     <ComboBoxItem Content="none"/>
                     <ComboBoxItem Content="edge"/>
                     <ComboBoxItem Content="chrome"/>
@@ -130,13 +129,13 @@
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition Width="8"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <TextBox Grid.Column="0" x:Name="TxtOutput"
-                             MinHeight="42" VerticalContentAlignment="Center"/>
+                             MinHeight="36" VerticalContentAlignment="Center"/>
                     <Button Grid.Column="2" Content="📁 찾아보기"
-                            Height="42" Padding="16,0"
+                            MinHeight="36" Padding="14,0"
                             Click="BtnBrowse_Click"/>
                 </Grid>
             </StackPanel>
@@ -158,12 +157,12 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock x:Name="TxtProgressFile"
                                Foreground="{StaticResource TextPrimaryBrush}"
-                               FontSize="13" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                               FontSize="12.5" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
                     <TextBlock Grid.Column="1" x:Name="TxtProgressPct"
                                Foreground="{StaticResource AccentRedBrush}"
-                               FontWeight="Bold" FontSize="14"/>
+                               FontWeight="Bold" FontSize="13"/>
                 </Grid>
-                <ProgressBar x:Name="PbProgress" Margin="0,10,0,6" Height="8"
+                <ProgressBar x:Name="PbProgress" Margin="0,6,0,4" Height="6"
                              Value="0" Maximum="100"/>
                 <TextBlock x:Name="TxtProgressMeta"
                            Foreground="{StaticResource TextSecondaryBrush}"
@@ -172,41 +171,41 @@
         </Border>
 
         <!-- ══ Terminal Log Console ════════════════════════════════════ -->
-        <Border Grid.Row="14" Style="{StaticResource CardPanel}" Padding="14">
+        <Border Grid.Row="14" Style="{StaticResource CardPanel}" Padding="12">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <Grid Grid.Row="0" Margin="0,0,0,10">
+                <Grid Grid.Row="0" Margin="0,0,0,6">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="8"/>
+                        <ColumnDefinition Width="6"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="💻" FontSize="12" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="💻" FontSize="11" Margin="0,0,4,0" VerticalAlignment="Center"/>
                         <TextBlock Text="CONSOLE LOGS" Style="{StaticResource SectionHeader}" Margin="0"/>
                     </StackPanel>
-                    <Button Grid.Column="1" Content="지우기" Padding="10,4" FontSize="11"
+                    <Button Grid.Column="1" Content="지우기" Padding="8,3" FontSize="11" MinHeight="26"
                             Click="BtnClearLog_Click"/>
-                    <Button Grid.Column="3" Content="복사" Padding="10,4" FontSize="11"
+                    <Button Grid.Column="3" Content="복사" Padding="8,3" FontSize="11" MinHeight="26"
                             Click="BtnCopyLog_Click"/>
                 </Grid>
 
                 <TextBox Grid.Row="1" x:Name="TxtLog"
                          Background="{StaticResource ConsoleBgBrush}"
                          Foreground="#F8F9FA"
-                         FontFamily="Cascadia Code, Consolas, Courier New" FontSize="11.5"
+                         FontFamily="Cascadia Code, Consolas, Courier New" FontSize="11"
                          IsReadOnly="True"
                          VerticalScrollBarVisibility="Auto"
                          HorizontalScrollBarVisibility="Auto"
                          TextWrapping="Wrap"
-                         MinHeight="120"
+                         MinHeight="100"
                          BorderThickness="0"
-                         Padding="12"/>
+                         Padding="10"/>
             </Grid>
         </Border>
     </Grid>

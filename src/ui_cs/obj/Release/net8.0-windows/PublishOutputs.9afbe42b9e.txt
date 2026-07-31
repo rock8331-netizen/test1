@@ -1,4 +1,5 @@
 E:\Dev\python_pj\No15_test\test1\dist\YoutubeDownloader.exe
+E:\Dev\python_pj\No15_test\test1\dist\analytics_py\yt_backend.py
 E:\Dev\python_pj\No15_test\test1\dist\YoutubeDownloader.dll
 E:\Dev\python_pj\No15_test\test1\dist\YoutubeDownloader.deps.json
 E:\Dev\python_pj\No15_test\test1\dist\YoutubeDownloader.runtimeconfig.json
