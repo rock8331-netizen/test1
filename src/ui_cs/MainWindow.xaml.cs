@@ -83,9 +83,10 @@ namespace YoutubeDownloader
             Dispatcher.InvokeAsync(() =>
             {
                 _isRunning = false;
-                BtnAction.Content    = "🚀  다운로드 시작";
+                BtnAction.Content    = "🚀   다운로드 시작";
                 BtnAction.IsEnabled  = true;
                 BtnAction.Background = (Brush)FindResource("AccentRedBrush");
+                System.Windows.Input.Mouse.Capture(null);
             });
         }
 
@@ -110,7 +111,6 @@ namespace YoutubeDownloader
             }
             catch
             {
-                // 폴백
                 var dlg = new System.Windows.Forms.FolderBrowserDialog
                 {
                     SelectedPath = TxtOutput.Text,
@@ -170,8 +170,8 @@ namespace YoutubeDownloader
             }
 
             _isRunning = true;
-            BtnAction.Content    = "🛑  중단";
-            BtnAction.Background = new SolidColorBrush(Color.FromRgb(0x88, 0x00, 0x00));
+            BtnAction.Content    = "🛑   중단";
+            BtnAction.Background = new SolidColorBrush(Color.FromRgb(0x99, 0x00, 0x1B));
 
             string quality = GetSelectedQuality();
             string output  = TxtOutput.Text;
@@ -195,16 +195,15 @@ namespace YoutubeDownloader
             {
                 if (_downloadProcess != null && !_downloadProcess.HasExited)
                 {
-                    // C++ DLL로 프로세스 강제 종료
                     NativeInterop.KillProcessById(_downloadProcess.Id);
                     _downloadProcess.Kill(true);
+                    _downloadProcess.Dispose();
                 }
             }
             catch { }
 
-            BtnAction.Content   = "⏳  중단 중...";
-            BtnAction.IsEnabled = false;
-            AppendLog("🛑 [중단 요청] 다운로드를 중단합니다...");
+            AppendLog("🛑 [중단] 다운로드가 중단되었습니다.");
+            ResetRunningState();
         }
 
         // ── Python 백엔드 실행 및 JSON Lines 수신 ────────────
@@ -238,24 +237,25 @@ namespace YoutubeDownloader
                 CreateNoWindow         = true,
             };
 
-            _downloadProcess = new Process { StartInfo = psi };
-            _downloadProcess.Start();
-
-            // stdout: JSON Lines 파싱
-            string? line;
-            while ((line = _downloadProcess.StandardOutput.ReadLine()) != null)
+            try
             {
-                if (ct.IsCancellationRequested) break;
-                ParseJsonLine(line);
+                _downloadProcess = new Process { StartInfo = psi };
+                _downloadProcess.Start();
+
+                string? line;
+                while (!ct.IsCancellationRequested &&
+                       _downloadProcess != null &&
+                       !_downloadProcess.HasExited &&
+                       (line = _downloadProcess.StandardOutput.ReadLine()) != null)
+                {
+                    ParseJsonLine(line);
+                }
             }
-
-            // stderr: 직접 로그
-            string err = _downloadProcess.StandardError.ReadToEnd();
-            if (!string.IsNullOrWhiteSpace(err))
-                AppendLog($"⚠️ {err.Trim()}");
-
-            if (!_downloadProcess.HasExited)
-                _downloadProcess.WaitForExit(3000);
+            catch (Exception ex)
+            {
+                if (!ct.IsCancellationRequested)
+                    AppendLog($"⚠️ {ex.Message}");
+            }
         }
 
         // ── JSON Lines 파싱 ───────────────────────────────────
