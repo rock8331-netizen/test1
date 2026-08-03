@@ -1,15 +1,32 @@
-# Build / Executable / Media artifacts
+# ── Build artifacts ───────────────────────────────────────
 *.exe
 *.obj
 *.o
 *.pdb
+*.dll
+*.res
+
+# ── Media / Binary assets (단, 소스 리소스 제외) ──────────
 *.mp4
-*.png
 *.webp
+
+# ── Build output directories ──────────────────────────────
 build/
 bin/
 obj/
 dist/
 out/
+
+# ── IDE / Tool directories ────────────────────────────────
 .vs/
 .vscode/
+__pycache__/
+*.pyc
+*.pyo
+
+# ── Workspace / Editor settings ──────────────────────────
+*.code-workspace
+
+# ── Download data ─────────────────────────────────────────
+data/
+dist/downloads/
