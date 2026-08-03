@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-yt_backend.py  –  YoutubeDownloader v2.0 Python 백엔드
+yt_backend.py  --  YouGrab v2.0 Python Backend
 C# WPF UI에서 subprocess.Start()로 실행되며,
 JSON Lines 형식으로 stdout에 진행 상황을 출력합니다.
 
@@ -78,40 +78,47 @@ def find_ffmpeg() -> str | None:
 
 
 def ensure_ffmpeg() -> str | None:
-    """ffmpeg 없으면 자동 다운로드 (data/bin 폴더)"""
+    """ffmpeg 없으면 초고화질(4K/1080p) 병합용 FFmpeg 자동 수신 (data/bin 폴더)"""
     loc = find_ffmpeg()
     if loc:
         return loc
 
     BIN_DIR.mkdir(parents=True, exist_ok=True)
     target = BIN_DIR / "ffmpeg.exe"
-    if target.exists():
+    if target.exists() and target.stat().st_size > 1_000_000:
         return str(BIN_DIR)
 
-    emit_info("📦 [최초 설정] FFmpeg 자동 다운로드 중...")
-    url = ("https://github.com/yt-dlp/FFmpeg-Builds/releases/download/"
-           "latest/ffmpeg-master-latest-win64-gpl.zip")
+    emit_info("[INIT] Fetching FFmpeg binary for high-quality stream merging...")
+    urls = [
+        "https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip",
+        "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n6.1-latest-win64-gpl-6.1.zip"
+    ]
     tmp_zip = BIN_DIR / "_ffmpeg_tmp.zip"
-    try:
-        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-        with urllib.request.urlopen(req) as resp, open(tmp_zip, "wb") as f:
-            shutil.copyfileobj(resp, f)
 
-        with zipfile.ZipFile(tmp_zip, "r") as z:
-            for m in z.namelist():
-                if m.endswith("ffmpeg.exe"):
-                    with z.open(m) as src, open(target, "wb") as dst:
-                        shutil.copyfileobj(src, dst)
-                elif m.endswith("ffprobe.exe"):
-                    with z.open(m) as src, open(BIN_DIR / "ffprobe.exe", "wb") as dst:
-                        shutil.copyfileobj(src, dst)
+    for url in urls:
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req, timeout=30) as resp, open(tmp_zip, "wb") as f:
+                shutil.copyfileobj(resp, f)
 
-        tmp_zip.unlink(missing_ok=True)
-        if target.exists():
-            emit_info("✅ FFmpeg 설치 완료!")
-            return str(BIN_DIR)
-    except Exception as e:
-        emit_error(f"FFmpeg 자동 다운로드 실패: {e}")
+            with zipfile.ZipFile(tmp_zip, "r") as z:
+                for m in z.namelist():
+                    if m.endswith("ffmpeg.exe"):
+                        with z.open(m) as src, open(target, "wb") as dst:
+                            shutil.copyfileobj(src, dst)
+                    elif m.endswith("ffprobe.exe"):
+                        with z.open(m) as src, open(BIN_DIR / "ffprobe.exe", "wb") as dst:
+                            shutil.copyfileobj(src, dst)
+
+            tmp_zip.unlink(missing_ok=True)
+            if target.exists() and target.stat().st_size > 1_000_000:
+                emit_info("[INIT] FFmpeg engine ready.")
+                return str(BIN_DIR)
+        except Exception as e:
+            tmp_zip.unlink(missing_ok=True)
+            continue
+
+    emit_error("[WARN] FFmpeg auto-download failed - falling back to single stream format.")
     return None
 
 
@@ -133,6 +140,27 @@ def scan_files(directory: Path) -> set:
     if not directory.exists():
         return set()
     return {p for p in directory.rglob("*") if p.is_file()}
+
+
+def cleanup_temp_files(directory: Path):
+    """다운로드 완료 후 임시 파티션/잔여 부분 파일(*.part, *.ytdl, *.tmp) 및 미완료 가비지 청소"""
+    if not directory.exists():
+        return
+    cleaned_count = 0
+    temp_extensions = {".part", ".ytdl", ".tmp", ".temp", ".frag", ".aria2"}
+    try:
+        for item in directory.glob("*"):
+            if item.is_file():
+                if item.suffix.lower() in temp_extensions or "_tmp" in item.name.lower():
+                    try:
+                        item.unlink()
+                        cleaned_count += 1
+                    except Exception:
+                        pass
+        if cleaned_count > 0:
+            emit_info(f"[CLEANUP] Temp fragment files removed: {cleaned_count}")
+    except Exception:
+        pass
 
 
 # ── 메인 다운로드 함수 ─────────────────────────────────────
@@ -157,24 +185,90 @@ def run_download(args):
     FNAME_RE   = re.compile(r"\[download\] Destination:\s*(.+)")
 
     current_filename = ""
+    current_stream_index = 0
+    last_raw_pct = 0.0
+
+    def progress_hook(d):
+        nonlocal current_stream_index, last_raw_pct, current_filename
+        if d.get("status") == "downloading":
+            raw_pct_str = d.get("_percent_str", "0%").strip().replace("%", "")
+            speed = d.get("_speed_str", "").strip()
+            eta   = d.get("_eta_str", "").strip()
+            fname = Path(d.get("filename", "")).name
+            if fname:
+                current_filename = fname
+            try:
+                raw_pct = float(raw_pct_str)
+                if current_stream_index == 0 and last_raw_pct > 70.0 and raw_pct < 20.0:
+                    current_stream_index = 1
+
+                last_raw_pct = raw_pct
+
+                if current_stream_index == 0:
+                    overall_pct = raw_pct * 0.85
+                else:
+                    overall_pct = 85.0 + (raw_pct * 0.10)
+
+                emit({"type": "progress", "percent": round(overall_pct, 1),
+                      "speed": speed, "eta": eta, "filename": current_filename})
+            except ValueError:
+                pass
+        elif d.get("status") == "finished":
+            if current_stream_index == 0:
+                current_stream_index = 1
+                last_raw_pct = 0.0
+
+    # 1. watch?v= 가 포함된 경우: 단일 영상 1개만 다운로드 (noplaylist=True, playlistend=1)
+    # 2. list= 만 포함된 경우: 플레이리스트 전체 완주 수신 (noplaylist=False)
+    emit({"type": "stage", "step": "parsing", "msg": "URL 규격 및 수신 범위 파싱 중..."})
+    if "watch?v=" in args.url:
+        is_noplaylist = True
+    elif "list=" in args.url:
+        is_noplaylist = False
+    else:
+        is_noplaylist = True
+
+    skipped_reasons = []
 
     class JsonLogger:
         def debug(self, msg):
             if not msg or msg.startswith("[debug] "):
                 return
-            # 파일명 추출
-            nonlocal current_filename
+            nonlocal current_filename, current_stream_index, last_raw_pct
+
+            if "has already been downloaded" in msg or "already in archive" in msg:
+                m_already = re.search(r"\[download\]\s+(.+?)\s+has already been downloaded", msg)
+                if m_already:
+                    current_filename = Path(m_already.group(1).strip()).name
+                emit({"type": "stage", "step": "skipped_archive", "msg": "[이전 기록 있음] 이미 받았던 기록이 존재하는 파일입니다."})
+                emit({"type": "progress", "percent": 100.0, "speed": "이력 존재", "eta": "00:00", "filename": current_filename})
+
+            if "[Merger]" in msg or "[FFmpegVideoConvertor]" in msg:
+                emit({"type": "stage", "step": "merging", "msg": "고화질 병합 작업 중..."})
+                emit({"type": "progress", "percent": 96.0, "speed": "", "eta": "00:01", "filename": current_filename})
+            elif "[FFmpegSubtitlesConvertor]" in msg:
+                emit({"type": "stage", "step": "subtitles", "msg": "자막 파일(.srt) 처리 중..."})
+                emit({"type": "progress", "percent": 98.0, "speed": "", "eta": "00:01", "filename": current_filename})
+
             m = FNAME_RE.search(msg)
             if m:
                 current_filename = Path(m.group(1).strip()).name
 
-            # 진행률 파싱
             pm = PERCENT_RE.search(msg)
             if pm:
-                pct = float(pm.group(1))
+                raw_pct = float(pm.group(1))
+                if current_stream_index == 0 and last_raw_pct > 70.0 and raw_pct < 20.0:
+                    current_stream_index = 1
+                last_raw_pct = raw_pct
+
+                if current_stream_index == 0:
+                    overall_pct = raw_pct * 0.85
+                else:
+                    overall_pct = 85.0 + (raw_pct * 0.10)
+
                 speed = (SPEED_RE.search(msg) or type("", (), {"group": lambda s, i: ""})()).group(1) if SPEED_RE.search(msg) else ""
                 eta   = ETA_RE.search(msg).group(1) if ETA_RE.search(msg) else ""
-                emit({"type": "progress", "percent": pct,
+                emit({"type": "progress", "percent": round(overall_pct, 1),
                       "speed": speed, "eta": eta,
                       "filename": current_filename})
             else:
@@ -186,40 +280,39 @@ def run_download(args):
 
         def warning(self, msg):
             if msg:
-                emit_info(f"⚠️ {msg.strip()}")
+                msg_str = msg.strip()
+                skipped_reasons.append(msg_str)
+                emit_info(f"[SKIP] Reason: {msg_str}")
 
         def error(self, msg):
             if msg:
-                emit_error(msg.strip())
-
-    def progress_hook(d):
-        if d.get("status") == "downloading":
-            pct   = d.get("_percent_str", "0%").strip().replace("%", "")
-            speed = d.get("_speed_str", "").strip()
-            eta   = d.get("_eta_str", "").strip()
-            fname = Path(d.get("filename", "")).name
-            try:
-                emit({"type": "progress", "percent": float(pct),
-                      "speed": speed, "eta": eta, "filename": fname})
-            except ValueError:
-                pass
+                msg_str = msg.strip()
+                skipped_reasons.append(msg_str)
+                emit_info(f"[SKIP_ERR] Reason: {msg_str}")
 
     ydl_opts = {
         "format":              format_spec,
         "outtmpl":             str(out_dir / "%(title)s [%(id)s].%(ext)s"),
         "merge_output_format": "mp4",
-        "noplaylist":          False,
-        "continue_dl":         True,
+        "noplaylist":          is_noplaylist,
+        "ignoreerrors":        True,                 # 플레이리스트 완주 보장: 결함 항목 건너뜀
+        "continue_dl":         True,                 # 이어받기 활성화
+        "overwrites":          bool(args.ignore_archive),  # 새로받기 선택 시 덮어쓰기 허용
+        "retries":             10,                   # 일시적 연결 실패 시 10회 자동 재시도
+        "fragment_retries":    10,                   # 조각 다운로드 실패 시 10회 재시도
+        "skip_unavailable_fragments": True,           # 손상 조각 자동 건너뛰기
         "nocheckcertificate":  True,
         "logger":              JsonLogger(),
-        "progress_hooks":      [progress_hook],
     }
+
+    if is_noplaylist:
+        ydl_opts["playlistend"] = 1
 
     ff_loc = ensure_ffmpeg()
     if ff_loc:
         ydl_opts["ffmpeg_location"] = ff_loc
     else:
-        emit_info("⚠️ ffmpeg 없음 – 단일 스트림(b/best)으로 다운로드합니다.")
+        emit_info("[WARN] FFmpeg unavailable - falling back to best single format.")
         ydl_opts["format"] = "b/best"
 
     if not args.ignore_archive:
@@ -233,21 +326,28 @@ def run_download(args):
         ydl_opts["subtitleslangs"]  = ["ko", "en"]
         ydl_opts["postprocessors"]  = [{"key": "FFmpegSubtitlesConvertor", "format": "srt"}]
 
-    emit_info(f"저장 폴더: {out_dir}")
+    emit_info(f"[TARGET] Directory: {out_dir}")
     return_code = 0
 
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             return_code = ydl.download([args.url])
     except Exception as e:
-        emit_error(f"다운로드 오류: {e}")
+        emit_error(f"[ERROR] Exception: {e}")
         return_code = 1
     finally:
+        cleanup_temp_files(out_dir)
+        emit({"type": "stage", "step": "cleaning", "msg": "[CLEANUP] Removing temporary fragment files..."})
+
         after_files  = scan_files(out_dir)
         new_files    = sorted(after_files - before_files)
         total_bytes  = sum(f.stat().st_size for f in new_files)
-        status       = "completed" if return_code == 0 else ("failed" if not new_files else "partial")
+        status       = "completed" if (return_code == 0 or new_files) else "failed"
 
+        if skipped_reasons:
+            emit_info(f"[SUMMARY] Skipped/Error count: {len(skipped_reasons)}")
+
+        emit({"type": "progress", "percent": 100.0, "speed": "완료", "eta": "00:00", "filename": current_filename})
         emit({
             "type":        "done",
             "status":      status,

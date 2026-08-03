@@ -4,6 +4,7 @@ using System.IO;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using YoutubeDownloader.Models;
 
 namespace YoutubeDownloader.Services
 {
@@ -24,6 +25,25 @@ namespace YoutubeDownloader.Services
             {
                 if (File.Exists(p)) return p;
             }
+
+            // Extract embedded yt_backend.py for standalone Single-File execution
+            string tempDir = Path.Combine(Path.GetTempPath(), "YoutubeDownloader");
+            Directory.CreateDirectory(tempDir);
+            string tempPyPath = Path.Combine(tempDir, "yt_backend.py");
+            try
+            {
+                var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                using Stream? stream = assembly.GetManifestResourceStream("YoutubeDownloader.Resources.yt_backend.py")
+                                     ?? assembly.GetManifestResourceStream("YoutubeDownloader.yt_backend.py");
+                if (stream != null)
+                {
+                    using FileStream fs = new FileStream(tempPyPath, FileMode.Create, FileAccess.Write);
+                    stream.CopyTo(fs);
+                    return tempPyPath;
+                }
+            }
+            catch { }
+
             return candidates[0];
         }
 
@@ -38,6 +58,8 @@ namespace YoutubeDownloader.Services
         private static string? FindPython()
         {
             string[] candidates = {
+                @"C:\Users\user\AppData\Local\Python\bin\python.exe",
+                @"C:\Users\user\AppData\Local\hermes\hermes-agent\venv\Scripts\python.exe",
                 @"C:\Users\user\AppData\Local\Programs\Python\Python312\python.exe",
                 @"C:\Users\user\AppData\Local\Programs\Python\Python311\python.exe",
                 @"C:\Users\user\AppData\Local\Programs\Python\Python310\python.exe",
@@ -55,13 +77,8 @@ namespace YoutubeDownloader.Services
         }
 
         public async Task StartDownloadAsync(
-            string url,
-            string quality,
-            string output,
-            string cookies,
-            bool saveSubtitles,
-            bool forceDownload,
-            Action<double, string, string, string> onProgress,
+            DownloadOptions options,
+            Action<DownloadProgress> onProgress,
             Action<string> onLog,
             CancellationToken ct)
         {
@@ -74,12 +91,12 @@ namespace YoutubeDownloader.Services
                 return;
             }
 
-            var args = $"\"{pyPath}\" \"{url}\" " +
-                       $"--output \"{output}\" " +
-                       $"--quality {quality} " +
-                       $"--cookies {cookies} " +
-                       (saveSubtitles ? "--save-sub " : "") +
-                       (forceDownload ? "--ignore-archive" : "");
+            var args = $"\"{pyPath}\" \"{options.Url}\" " +
+                       $"--output \"{options.OutputPath}\" " +
+                       $"--quality {options.Quality} " +
+                       $"--cookies {options.Cookies} " +
+                       (options.SaveSubtitles ? "--save-sub " : "") +
+                       (options.ForceDownload ? "--ignore-archive" : "");
 
             var psi = new ProcessStartInfo
             {
@@ -115,28 +132,41 @@ namespace YoutubeDownloader.Services
                                 var root = doc.RootElement;
                                 string type = root.GetProperty("type").GetString() ?? "";
 
-                                if (type == "download_progress")
+                                if (type == "stage")
+                                {
+                                    string step = root.TryGetProperty("step", out var st) ? st.GetString() ?? "" : "";
+                                    string msg = root.TryGetProperty("msg", out var sm) ? sm.GetString() ?? "" : "";
+                                    onProgress(new DownloadProgress { Step = step, Message = msg });
+                                }
+                                else if (type == "download_progress" || type == "progress")
                                 {
                                     double pct = root.GetProperty("percent").GetDouble();
-                                    string fname = root.GetProperty("filename").GetString() ?? "";
-                                    string speed = root.GetProperty("speed").GetString() ?? "";
-                                    string eta = root.GetProperty("eta").GetString() ?? "";
+                                    string fname = root.TryGetProperty("filename", out var f) ? f.GetString() ?? "" : "";
+                                    string speed = root.TryGetProperty("speed", out var s) ? s.GetString() ?? "" : "";
+                                    string eta = root.TryGetProperty("eta", out var e) ? e.GetString() ?? "" : "";
 
-                                    onProgress(pct, fname, speed, eta);
+                                    onProgress(new DownloadProgress
+                                    {
+                                        Percent = pct,
+                                        Filename = fname,
+                                        Speed = speed,
+                                        Eta = eta,
+                                        Step = "downloading"
+                                    });
                                 }
-                                else if (type == "log")
+                                else if (type == "log" || type == "info")
                                 {
-                                    string msg = root.GetProperty("message").GetString() ?? "";
-                                    onLog(msg);
+                                    string msg = root.TryGetProperty("message", out var m) ? (m.GetString() ?? "") : (root.TryGetProperty("msg", out var m2) ? (m2.GetString() ?? "") : "");
+                                    if (!string.IsNullOrEmpty(msg)) onLog(msg);
                                 }
-                                else if (type == "download_complete")
+                                else if (type == "download_complete" || type == "done")
                                 {
-                                    onLog("✅ [완료] 다운로드가 성공적으로 끝났습니다.");
+                                    onLog("[SUCCESS] Download pipeline completed.");
                                 }
                                 else if (type == "error")
                                 {
-                                    string err = root.GetProperty("message").GetString() ?? "";
-                                    onLog($"❌ [오류] {err}");
+                                    string err = root.TryGetProperty("message", out var m) ? (m.GetString() ?? "") : (root.TryGetProperty("msg", out var m2) ? (m2.GetString() ?? "") : "");
+                                    onLog($"[ERROR] {err}");
                                 }
                             }
                             catch

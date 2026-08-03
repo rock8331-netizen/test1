@@ -1,9 +1,10 @@
 <Window x:Class="YoutubeDownloader.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="YouTube Downloader v2.0"
-        Height="390" Width="380"
-        MinHeight="350" MinWidth="350"
+        Title="YouGrab v2.0"
+        Icon="app.ico"
+        Height="390" Width="410"
+        MinHeight="330" MinWidth="380"
         WindowStartupLocation="CenterScreen"
         Background="{StaticResource CanvasBgBrush}">
 
@@ -11,102 +12,109 @@
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
     </Window.Resources>
 
-    <Grid Margin="10">
+    <Grid Margin="12">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>   <!-- 0: Header Banner -->
-            <RowDefinition Height="4"/>
-            <RowDefinition Height="Auto"/>   <!-- 2: URL Input -->
-            <RowDefinition Height="4"/>
-            <RowDefinition Height="Auto"/>   <!-- 4: Options -->
-            <RowDefinition Height="4"/>
-            <RowDefinition Height="Auto"/>   <!-- 6: Output Folder -->
+            <RowDefinition Height="Auto"/>   <!-- 0: Unified Top URL & Action Header -->
             <RowDefinition Height="6"/>
-            <RowDefinition Height="Auto"/>   <!-- 8: Action Button -->
-            <RowDefinition Height="4"/>
-            <RowDefinition Height="Auto"/>   <!-- 10: Progress Panel -->
-            <RowDefinition Height="4"/>
-            <RowDefinition Height="*"/>      <!-- 12: Terminal Log Console -->
+            <RowDefinition Height="Auto"/>   <!-- 2: Stream & Cookie Options -->
+            <RowDefinition Height="6"/>
+            <RowDefinition Height="Auto"/>   <!-- 4: Output Path Card -->
+            <RowDefinition Height="8"/>
+            <RowDefinition Height="Auto"/>   <!-- 6: Primary Action Button -->
+            <RowDefinition Height="6"/>
+            <RowDefinition Height="Auto"/>   <!-- 8: Live Progress Dashboard -->
+            <RowDefinition Height="6"/>
+            <RowDefinition Height="*"/>      <!-- 10: Slim Resizable Terminal Log Console -->
         </Grid.RowDefinitions>
 
-        <!-- 0: Header Banner -->
-        <Grid Grid.Row="0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
-            </Grid.ColumnDefinitions>
-
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <Border Background="{StaticResource AccentRedBrush}" CornerRadius="5" Width="24" Height="24" Margin="0,0,6,0">
-                    <Path Data="M 0,0 L 8,5 L 0,10 Z" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2,0,0,0"/>
-                </Border>
-                <TextBlock Text="YouTube Downloader v2.0"
-                           Foreground="{StaticResource TextPrimaryBrush}"
-                           FontSize="14" FontWeight="Bold" VerticalAlignment="Center"/>
-            </StackPanel>
-
-            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                <Button Content="❓ 도움말"
-                        VerticalAlignment="Center" Padding="6,0" Height="26" FontSize="11" Margin="0,0,4,0"
-                        Command="{Binding ShowHelpCommand}"/>
-                <Button Content="📁 완료 폴더"
-                        VerticalAlignment="Center" Padding="6,0" Height="26" FontSize="11"
-                        Command="{Binding OpenCompletedFolderCommand}"/>
-            </StackPanel>
-        </Grid>
-
-        <!-- 2: URL Input Card -->
-        <Border Grid.Row="2" Style="{StaticResource SlimCardPanel}" Padding="8,6">
+        <!-- 0: Unified Top URL & Action Header -->
+        <Border Grid.Row="0" Style="{StaticResource SlimCardPanel}" Padding="8,6">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>   <!-- 0: Emblem -->
                     <ColumnDefinition Width="6"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>      <!-- 2: Top URL Input Box -->
+                    <ColumnDefinition Width="6"/>
+                    <ColumnDefinition Width="Auto"/>   <!-- 4: Smart Clear / Paste Button -->
+                    <ColumnDefinition Width="4"/>
+                    <ColumnDefinition Width="Auto"/>   <!-- 6: Completed Folder Button -->
+                    <ColumnDefinition Width="4"/>
+                    <ColumnDefinition Width="Auto"/>   <!-- 8: Help Button -->
                 </Grid.ColumnDefinitions>
-                <TextBox Grid.Column="0" Text="{Binding Url, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="28" FontSize="11.5" VerticalContentAlignment="Center"/>
-                <Button Grid.Column="2" Content="📋 붙여넣기" Height="28" Padding="8,0" FontSize="11" Command="{Binding PasteUrlCommand}"/>
+
+                <!-- Left: Red Play Emblem -->
+                <Border Grid.Column="0" Background="{StaticResource AccentRedBrush}" CornerRadius="5" Width="26" Height="26" VerticalAlignment="Center">
+                    <Path Data="M 0,0 L 7,4.5 L 0,9 Z" Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="1.5,0,0,0"/>
+                </Border>
+
+                <!-- Center: Top URL Input Box with Smart Clear Overlay -->
+                <Grid Grid.Column="2">
+                    <TextBox Text="{Binding Url, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             Height="26" FontSize="11" VerticalContentAlignment="Center" Padding="6,0,22,0" Margin="0"/>
+                    <Button Command="{Binding ClearUrlCommand}"
+                            Visibility="{Binding HasUrlText, Converter={StaticResource BoolToVis}}"
+                            HorizontalAlignment="Right" VerticalAlignment="Center"
+                            Width="18" Height="18" Margin="0,0,3,0" Padding="0"
+                            Background="Transparent" BorderThickness="0" ToolTip="입력 지우기">
+                        <TextBlock Text="✕" FontSize="10" FontWeight="Bold" Foreground="#A1A1AA"/>
+                    </Button>
+                </Grid>
+
+                <!-- Right: Quick Action Buttons -->
+                <Button Grid.Column="4" Content="붙여넣기" Height="26" Padding="8,0" FontSize="10.5" Command="{Binding PasteUrlCommand}"/>
+                <Button Grid.Column="6" Content="완료 폴더"
+                        Background="#0F172A" Foreground="#FFFFFF" BorderBrush="#334155" FontWeight="Bold"
+                        VerticalAlignment="Center" Padding="10,0" Height="26" FontSize="10.5"
+                        Command="{Binding OpenCompletedFolderCommand}"/>
+                <Button Grid.Column="8" ToolTip="도움말 및 사용 가이드"
+                        Width="26" Height="26" Padding="0"
+                        Command="{Binding ShowHelpCommand}">
+                    <TextBlock Text="?" FontSize="13" FontWeight="Bold" Foreground="{StaticResource TextSecondaryBrush}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Button>
             </Grid>
         </Border>
 
-        <!-- 4: Options Card (2x2 Compact) -->
-        <Border Grid.Row="4" Style="{StaticResource SlimCardPanel}" Padding="8,6">
+        <!-- 2: Stream & Cookie Options Card -->
+        <Border Grid.Row="2" Style="{StaticResource SlimCardPanel}" Padding="10,8">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="4"/>
+                    <RowDefinition Height="6"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="6"/>
+                    <ColumnDefinition Width="10"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- Row 0: Quality & Cookie -->
+                <!-- Quality Selection -->
                 <Grid Grid.Row="0" Grid.Column="0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="4"/>
+                        <ColumnDefinition Width="6"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="화질" VerticalAlignment="Center" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"/>
+                    <TextBlock Text="화질" VerticalAlignment="Center" FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
                     <ComboBox Grid.Column="2" SelectedValuePath="Tag" SelectedValue="{Binding SelectedQuality, Mode=TwoWay}" Height="26" FontSize="11">
-                        <ComboBoxItem Content="Best (최고)" Tag="best"/>
-                        <ComboBoxItem Content="2160p (4K)" Tag="2160p"/>
-                        <ComboBoxItem Content="1440p (2K)" Tag="1440p"/>
-                        <ComboBoxItem Content="1080p (FHD)" Tag="1080p"/>
+                        <ComboBoxItem Content="Best (최고화질)" Tag="best"/>
+                        <ComboBoxItem Content="2160p (4K UHD)" Tag="2160p"/>
+                        <ComboBoxItem Content="1440p (2K QHD)" Tag="1440p"/>
+                        <ComboBoxItem Content="1080p (Full HD)" Tag="1080p"/>
                         <ComboBoxItem Content="720p (HD)" Tag="720p"/>
-                        <ComboBoxItem Content="480p" Tag="480p"/>
-                        <ComboBoxItem Content="360p" Tag="360p"/>
+                        <ComboBoxItem Content="480p (SD)" Tag="480p"/>
+                        <ComboBoxItem Content="360p (Light)" Tag="360p"/>
                     </ComboBox>
                 </Grid>
 
+                <!-- Cookie Selection -->
                 <Grid Grid.Row="0" Grid.Column="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="4"/>
+                        <ColumnDefinition Width="6"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="쿠키" VerticalAlignment="Center" FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"/>
+                    <TextBlock Text="쿠키" VerticalAlignment="Center" FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
                     <ComboBox Grid.Column="2" SelectedValuePath="Content" SelectedValue="{Binding SelectedCookie, Mode=TwoWay}" Height="26" FontSize="11">
                         <ComboBoxItem Content="none"/>
                         <ComboBoxItem Content="edge"/>
@@ -115,36 +123,36 @@
                     </ComboBox>
                 </Grid>
 
-                <!-- Row 2: Checkboxes -->
-                <CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{Binding SaveSubtitles, Mode=TwoWay}" Content="자막 (.srt)" VerticalAlignment="Center" FontSize="11"/>
-                <CheckBox Grid.Row="2" Grid.Column="2" IsChecked="{Binding ForceDownload, Mode=TwoWay}" Content="새로 받기" VerticalAlignment="Center" FontSize="11"/>
+                <!-- Checkboxes -->
+                <CheckBox Grid.Row="2" Grid.Column="0" IsChecked="{Binding SaveSubtitles, Mode=TwoWay}" Content="자막 함께 저장 (.srt)" VerticalAlignment="Center" FontSize="11"/>
+                <CheckBox Grid.Row="2" Grid.Column="2" IsChecked="{Binding ForceDownload, Mode=TwoWay}" Content="기존 기록 무시하고 새로 받기" VerticalAlignment="Center" FontSize="11"/>
             </Grid>
         </Border>
 
-        <!-- 6: Output Folder Card -->
-        <Border Grid.Row="6" Style="{StaticResource SlimCardPanel}" Padding="8,6">
+        <!-- 4: Output Path Card -->
+        <Border Grid.Row="4" Style="{StaticResource SlimCardPanel}" Padding="10,8">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="6"/>
+                    <ColumnDefinition Width="8"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBox Grid.Column="0" Text="{Binding OutputPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="28" FontSize="11"/>
-                <Button Grid.Column="2" Content="📁 찾아보기" Height="28" Padding="8,0" FontSize="11" Command="{Binding BrowseOutputFolderCommand}"/>
+                <TextBox Grid.Column="0" Text="{Binding OutputPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="28" FontSize="11" VerticalContentAlignment="Center"/>
+                <Button Grid.Column="2" Content="찾아보기" Height="28" Padding="10,0" FontSize="11" Command="{Binding BrowseOutputFolderCommand}"/>
             </Grid>
         </Border>
 
-        <!-- 8: Primary Action Button -->
-        <Button Grid.Row="8"
+        <!-- 6: Primary Action Button -->
+        <Button Grid.Row="6"
                 Content="{Binding ActionButtonText}"
                 Command="{Binding StartOrStopDownloadCommand}"
-                Height="32"
+                Height="34"
                 Style="{StaticResource PrimaryActionButton}"/>
 
-        <!-- 10: Progress Panel -->
-        <Border Grid.Row="10" Style="{StaticResource SlimCardPanel}" Padding="8,4" Visibility="{Binding IsProgressVisible, Converter={StaticResource BoolToVis}}">
+        <!-- 8: Live Progress Dashboard -->
+        <Border Grid.Row="8" Style="{StaticResource SlimCardPanel}" Padding="10,6" Visibility="{Binding IsProgressVisible, Converter={StaticResource BoolToVis}}">
             <StackPanel>
-                <Grid>
+                <Grid Margin="0,0,0,3">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
@@ -152,44 +160,40 @@
                     <TextBlock Text="{Binding ProgressFile}" Foreground="{StaticResource TextPrimaryBrush}" FontSize="11" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
                     <TextBlock Grid.Column="1" Text="{Binding ProgressPctText}" Foreground="{StaticResource AccentRedBrush}" FontWeight="Bold" FontSize="11"/>
                 </Grid>
-                <ProgressBar Margin="0,3,0,1" Height="3" Value="{Binding ProgressPct}" Maximum="100"/>
+                <ProgressBar Margin="0,2,0,3" Height="4" Value="{Binding ProgressPct}" Maximum="100"/>
                 <TextBlock Text="{Binding ProgressMeta}" Foreground="{StaticResource TextSecondaryBrush}" FontSize="10"/>
             </StackPanel>
         </Border>
 
-        <!-- 12: Terminal Log Console (Ultra-Compact Log View) -->
-        <Border Grid.Row="12" Style="{StaticResource SlimCardPanel}" Padding="4,3">
-            <Grid>
+        <!-- 10: Slim Resizable Terminal Log Console -->
+        <Border Grid.Row="10" Background="{StaticResource ConsoleBgBrush}" CornerRadius="6" Padding="6,3" VerticalAlignment="Stretch">
+            <Grid VerticalAlignment="Stretch">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <Grid Grid.Row="0" Margin="2,0,2,2">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="4"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock Text="로그 콘솔" Style="{StaticResource SectionHeader}" Margin="0" FontSize="10" VerticalAlignment="Center"/>
-                    <Button Grid.Column="1" Content="지우기" Padding="4,0" FontSize="9.5" Height="18" Command="{Binding ClearLogCommand}"/>
-                    <Button Grid.Column="3" Content="복사" Padding="4,0" FontSize="9.5" Height="18" Command="{Binding CopyLogCommand}"/>
-                </Grid>
+                <!-- Console Header: Right-aligned Clear and Copy Buttons (Text Label Removed) -->
+                <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,2,2">
+                    <Button Content="지우기" Padding="6,0" FontSize="9.5" Height="17" Margin="0,0,4,0" Command="{Binding ClearLogCommand}"/>
+                    <Button Content="복사" Padding="6,0" FontSize="9.5" Height="17" Command="{Binding CopyLogCommand}"/>
+                </StackPanel>
 
-                <Border Grid.Row="1" Background="{StaticResource ConsoleBgBrush}" CornerRadius="3" Padding="0">
-                    <TextBox Text="{Binding LogText, Mode=OneWay}"
-                             Background="Transparent"
-                             Foreground="#F8F9FA"
-                             FontFamily="Cascadia Code, Consolas, Courier New" FontSize="10"
-                             IsReadOnly="True"
-                             VerticalScrollBarVisibility="Auto"
-                             HorizontalScrollBarVisibility="Auto"
-                             TextWrapping="Wrap"
-                             BorderThickness="0"
-                             Margin="0"
-                             Padding="4,2"/>
-                </Border>
+                <!-- Console Output Text Area -->
+                <TextBox x:Name="LogConsoleBox" Grid.Row="1" Text="{Binding LogText, Mode=OneWay}"
+                         Background="Transparent"
+                         Foreground="#F8F9FA"
+                         FontFamily="Cascadia Code, Consolas, Courier New" FontSize="10"
+                         IsReadOnly="True"
+                         VerticalScrollBarVisibility="Auto"
+                         HorizontalScrollBarVisibility="Auto"
+                         TextWrapping="Wrap"
+                         BorderThickness="0"
+                         Margin="0"
+                         Padding="2,0"
+                         VerticalAlignment="Stretch"
+                         HorizontalAlignment="Stretch"
+                         MinHeight="50"/>
             </Grid>
         </Border>
     </Grid>

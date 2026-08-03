@@ -14,13 +14,38 @@ namespace YoutubeDownloader
         // DLL 경로 탐색: 실행파일 동일 폴더 -> build 폴더 순
         private static string GetDllPath()
         {
-            string localPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "YoutubeCore.dll");
-            if (File.Exists(localPath)) return localPath;
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            string[] candidates = {
+                Path.Combine(baseDir, "YoutubeCore.dll"),
+                Path.GetFullPath(Path.Combine(baseDir, "..", "build", "YoutubeCore.dll")),
+                Path.GetFullPath(Path.Combine(baseDir, "..", "..", "build", "YoutubeCore.dll")),
+                Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "build", "YoutubeCore.dll")),
+                Path.GetFullPath(Path.Combine(baseDir, "..", "..", "..", "..", "build", "YoutubeCore.dll"))
+            };
+            foreach (string p in candidates)
+            {
+                if (File.Exists(p)) return p;
+            }
 
-            string buildPath = Path.GetFullPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "build", "YoutubeCore.dll"));
-            if (File.Exists(buildPath)) return buildPath;
+            // Extract embedded YoutubeCore.dll for standalone Single-File execution
+            string tempDir = Path.Combine(Path.GetTempPath(), "YoutubeDownloader");
+            Directory.CreateDirectory(tempDir);
+            string tempDllPath = Path.Combine(tempDir, "YoutubeCore.dll");
+            try
+            {
+                var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                using Stream? stream = assembly.GetManifestResourceStream("YoutubeDownloader.Resources.YoutubeCore.dll")
+                                     ?? assembly.GetManifestResourceStream("YoutubeDownloader.YoutubeCore.dll");
+                if (stream != null)
+                {
+                    using FileStream fs = new FileStream(tempDllPath, FileMode.Create, FileAccess.Write);
+                    stream.CopyTo(fs);
+                    return tempDllPath;
+                }
+            }
+            catch { }
 
-            return localPath;
+            return candidates[0];
         }
 
         private static readonly string DllPath = GetDllPath();
@@ -60,12 +85,14 @@ namespace YoutubeDownloader
                 _dll = LoadLibrary(DllPath);
                 if (_dll == IntPtr.Zero) return;
 
-                _findFFmpeg  = Marshal.GetDelegateForFunctionPointer<FindFFmpegPathDelegate>(
-                                   GetProcAddress(_dll, "FindFFmpegPath"));
-                _formatBytes = Marshal.GetDelegateForFunctionPointer<FormatBytesDelegate>(
-                                   GetProcAddress(_dll, "FormatBytes"));
-                _killProcess = Marshal.GetDelegateForFunctionPointer<KillProcessByIdDelegate>(
-                                   GetProcAddress(_dll, "KillProcessById"));
+                IntPtr pFind = GetProcAddress(_dll, "FindFFmpegPath");
+                if (pFind != IntPtr.Zero) _findFFmpeg = Marshal.GetDelegateForFunctionPointer<FindFFmpegPathDelegate>(pFind);
+
+                IntPtr pFormat = GetProcAddress(_dll, "FormatBytes");
+                if (pFormat != IntPtr.Zero) _formatBytes = Marshal.GetDelegateForFunctionPointer<FormatBytesDelegate>(pFormat);
+
+                IntPtr pKill = GetProcAddress(_dll, "KillProcessById");
+                if (pKill != IntPtr.Zero) _killProcess = Marshal.GetDelegateForFunctionPointer<KillProcessByIdDelegate>(pKill);
             }
             catch { /* DLL 로드 실패 시 폴백 모드로 동작 */ }
         }

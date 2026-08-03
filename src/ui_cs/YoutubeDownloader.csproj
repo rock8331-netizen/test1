@@ -5,23 +5,33 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-    <AssemblyName>YoutubeDownloader</AssemblyName>
+    <AssemblyName>YouGrab</AssemblyName>
     <RootNamespace>YoutubeDownloader</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <UseWindowsForms>true</UseWindowsForms>
 
-    <!-- 단일 실행 파일(Single File) 압축 통합 옵션 -->
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    <PublishSingleFile>true</PublishSingleFile>
-    <SelfContained>true</SelfContained>
-    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
-    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <!-- App Icon -->
+    <ApplicationIcon>app.ico</ApplicationIcon>
+
+    <!-- Unused Framework Feature Switches -->
+    <DebugSymbols>false</DebugSymbols>
+    <DebugType>none</DebugType>
+    <EventSourceSupport>false</EventSourceSupport>
+    <UseSystemResourceKeys>true</UseSystemResourceKeys>
+    <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
+    <MetadataUpdaterSupport>false</MetadataUpdaterSupport>
   </PropertyGroup>
 
   <ItemGroup>
     <None Include="..\analytics_py\yt_backend.py" Link="analytics_py\yt_backend.py">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\..\build\YoutubeCore.dll" Link="YoutubeCore.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <EmbeddedResource Include="..\analytics_py\yt_backend.py" Link="Resources\yt_backend.py" />
+    <EmbeddedResource Include="..\..\build\YoutubeCore.dll" Link="Resources\YoutubeCore.dll" />
+    <Resource Include="app.ico"/>
+    <Resource Include="Resources\kakao_qr.png"/>
   </ItemGroup>
 
 </Project>
